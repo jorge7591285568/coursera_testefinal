@@ -1,0 +1,782 @@
+> x<- c(1:10, 7:8)
+> x
+ [1]  1  2  3  4  5  6  7  8  9 10  7  8
+> c(1:10,7:8)
+ [1]  1  2  3  4  5  6  7  8  9 10  7  8
+> x <- 1:10
+> x
+ [1]  1  2  3  4  5  6  7  8  9 10
+> names(x) <- letters[1:10]
+> x
+ a  b  c  d  e  f  g  h  i  j 
+ 1  2  3  4  5  6  7  8  9 10 
+> c
+function (...)  .Primitive("c")
+> c(x)
+ a  b  c  d  e  f  g  h  i  j 
+ 1  2  3  4  5  6  7  8  9 10 
+> as.vector(x)
+ [1]  1  2  3  4  5  6  7  8  9 10
+> dim(x) <- c(5,2)
+> x
+     [,1] [,2]
+[1,]    1    6
+[2,]    2    7
+[3,]    3    8
+[4,]    4    9
+[5,]    5   10
+> c(x)
+ [1]  1  2  3  4  5  6  7  8  9 10
+> as.vector(x)
+ [1]  1  2  3  4  5  6  7  8  9 10
+> ll <- list(A =1,c=C)
+> c(ll, d=list(1:5))
+$A
+[1] 1
+
+$c
+function (object, contr, how.many, ...) 
+{
+    if (isFALSE(as.logical(Sys.getenv("_R_OPTIONS_STRINGS_AS_FACTORS_")))) 
+        object <- as.factor(object)
+    if (!nlevels(object)) 
+        stop("object not interpretable as a factor")
+    if (!missing(contr) && is.name(Xcontr <- substitute(contr))) 
+        contr <- switch(as.character(Xcontr), poly = "contr.poly", 
+            helmert = "contr.helmert", sum = "contr.sum", treatment = "contr.treatment", 
+            SAS = "contr.SAS", contr)
+    if (missing(contr)) {
+        oc <- getOption("contrasts")
+        contr <- if (length(oc) < 2L) 
+            if (is.ordered(object)) 
+                contr.poly
+            else contr.treatment
+        else oc[1 + is.ordered(object)]
+    }
+    if (missing(how.many) && missing(...)) 
+        contrasts(object) <- contr
+    else {
+        if (is.character(contr)) 
+            contr <- get(contr, mode = "function")
+        if (is.function(contr)) 
+            contr <- contr(nlevels(object), ...)
+        contrasts(object, how.many) <- contr
+    }
+    object
+}
+<bytecode: 0x55bea76bf0f0>
+<environment: namespace:stats>
+
+$d
+[1] 1 2 3 4 5
+
+> c(options(),recursive =TRUE)
+$add.smooth
+[1] TRUE
+
+$askpass
+function (prompt) 
+{
+    .Call("rs_askForPassword", prompt)
+}
+<environment: 0x55bea5ed20a8>
+
+$asksecret
+function (name, title = name, prompt = paste(name, ":", sep = "")) 
+{
+    result <- .Call("rs_askForSecret", name, title, prompt, .rs.isPackageInstalled("keyring"), 
+        .rs.hasSecret(name))
+    if (is.null(result)) 
+        stop("Ask for secret operation was cancelled.")
+    result
+}
+<environment: 0x55bea5ed20a8>
+
+$bitmapType
+[1] "cairo"
+
+$browser
+function (url) 
+{
+    .Call("rs_browseURL", url)
+}
+<environment: 0x55bea4115728>
+
+$browserNLdisabled
+[1] FALSE
+
+$buildtools.check
+function (action) 
+{
+    if (identical(.Platform$pkgType, "mac.binary.mavericks")) {
+        .Call("rs_canBuildCpp")
+    }
+    else {
+        if (!.Call("rs_canBuildCpp")) {
+            .rs.installBuildTools(action)
+            FALSE
+        }
+        else {
+            TRUE
+        }
+    }
+}
+<environment: 0x55bea5ed20a8>
+
+$buildtools.with
+function (code) 
+{
+    .rs.addRToolsToPath()
+    on.exit(.rs.restorePreviousPath(), add = TRUE)
+    force(code)
+}
+<environment: 0x55bea5ed20a8>
+
+$CBoundsCheck
+[1] FALSE
+
+$check.bounds
+[1] FALSE
+
+$citation.bibtex.max
+[1] 1
+
+$connectionObserver.connectionOpened
+function (type, host, displayName, icon = NULL, connectCode, 
+    disconnect, listObjectTypes, listObjects, listColumns, previewObject, 
+    connectionObject, actions = NULL) 
+{
+    if (!inherits(listObjectTypes, "function")) {
+        stop("listObjectTypes must be a function returning a list of object types", 
+            call. = FALSE)
+    }
+    promote <- function(name, l) {
+        if (length(l) == 0) 
+            return(list())
+        if (is.null(l$contains)) {
+            return(list(list(name = name, icon = l$icon, contains = "data")))
+        }
+        else {
+            return(unlist(append(list(list(list(name = name, 
+                icon = l$icon, contains = names(l$contains)))), 
+                lapply(names(l$contains), function(name) {
+                  promote(name, l$contains[[name]])
+                })), recursive = FALSE))
+        }
+        return(list())
+    }
+    objectTree <- listObjectTypes()
+    objectTypes <- lapply(names(objectTree), function(name) {
+        promote(name, objectTree[[name]])
+    })[[1]]
+    connection <- list(type = type, host = host, displayName = displayName, 
+        icon = icon, connectCode = connectCode, disconnect = disconnect, 
+        objectTypes = objectTypes, listObjects = listObjects, 
+        listColumns = listColumns, previewObject = previewObject, 
+        actions = actions, connectionObject = connectionObject)
+    class(connection) <- "rstudioConnection"
+    .rs.validateConnection(connection)
+    cacheKey <- paste(connection$type, connection$host, .Call("rs_generateShortUuid"), 
+        sep = "_")
+    assign(cacheKey, value = connection, envir = .rs.activeConnections)
+    invisible(.Call("rs_connectionOpened", connection))
+}
+<environment: 0x55bea6e8eda0>
+
+$connectionObserver.connectionClosed
+function (type, host, ...) 
+{
+    .rs.validateCharacterParams(list(type = type, host = host))
+    name <- .rs.findConnectionName(type, host)
+    if (!is.null(name)) 
+        rm(list = name, envir = .rs.activeConnections)
+    invisible(.Call("rs_connectionClosed", type, host))
+}
+<environment: 0x55bea6e8eda0>
+
+$connectionObserver.connectionUpdated
+function (type, host, hint, ...) 
+{
+    .rs.validateCharacterParams(list(type = type, host = host, 
+        hint = hint))
+    invisible(.Call("rs_connectionUpdated", type, host, hint))
+}
+<environment: 0x55bea6e8eda0>
+
+$continue
+[1] "+ "
+
+$contrasts.unordered
+[1] "contr.treatment"
+
+$contrasts.ordered
+[1] "contr.poly"
+
+$defaultPackages1
+[1] "datasets"
+
+$defaultPackages2
+[1] "utils"
+
+$defaultPackages3
+[1] "grDevices"
+
+$defaultPackages4
+[1] "graphics"
+
+$defaultPackages5
+[1] "stats"
+
+$defaultPackages6
+[1] "methods"
+
+$demo.ask
+[1] "default"
+
+$deparse.cutoff
+[1] 60
+
+$device
+[1] "RStudioGD"
+
+$device.ask.default
+[1] FALSE
+
+$digits
+[1] 7
+
+$download.file.method
+[1] "libcurl"
+
+$dvipscmd
+[1] "dvips"
+
+$echo
+[1] TRUE
+
+$editor
+[1] "vi"
+
+$encoding
+[1] "native.enc"
+
+$error
+(function () 
+{
+    .rs.recordTraceback(TRUE, 5, .rs.enqueueError)
+})()
+
+$example.ask
+[1] "default"
+
+$expressions
+[1] 5000
+
+$help_type
+[1] "html"
+
+$help.search.types1
+[1] "vignette"
+
+$help.search.types2
+[1] "demo"
+
+$help.search.types3
+[1] "help"
+
+$help.try.all.packages
+[1] FALSE
+
+$HTTPUserAgent
+[1] "R/4.0.0 R (4.0.0 x86_64-pc-linux-gnu x86_64 linux-gnu)"
+
+$internet.info
+[1] 2
+
+$keep.parse.data
+[1] TRUE
+
+$keep.parse.data.pkgs
+[1] FALSE
+
+$keep.source
+[1] TRUE
+
+$keep.source.pkgs
+[1] FALSE
+
+$locatorBell
+[1] TRUE
+
+$mailer
+[1] "none"
+
+$matprod
+[1] "default"
+
+$max.print
+[1] 1000
+
+$menu.graphics
+[1] FALSE
+
+$na.action
+[1] "na.omit"
+
+$nwarnings
+[1] 50
+
+$OutDec
+[1] "."
+
+$page_viewer
+function (url, title = "RStudio Viewer", self_contained = FALSE) 
+{
+    if (!is.character(url) || (length(url) != 1)) 
+        stop("url must be a single element character vector.", 
+            call. = FALSE)
+    if (!is.character(title) || (length(title) != 1)) 
+        stop("title must be a single element character vector.", 
+            call. = FALSE)
+    if (!is.logical(self_contained) || (length(self_contained) != 
+        1)) 
+        stop("self_contained must be a single element logical vector.", 
+            call. = FALSE)
+    invisible(.Call("rs_showPageViewer", url, title, self_contained))
+}
+<environment: 0x55bea4115728>
+
+$pager
+function (files, header, title, delete.file) 
+{
+    for (i in 1:length(files)) {
+        if ((i > length(header)) || !nzchar(header[[i]])) 
+            fileTitle <- title
+        else fileTitle <- header[[i]]
+        .Call("rs_showFile", fileTitle, files[[i]], delete.file)
+    }
+}
+<environment: 0x55bea5ed20a8>
+
+$papersize
+[1] "letter"
+
+$PCRE_limit_recursion
+[1] NA
+
+$PCRE_study
+[1] FALSE
+
+$PCRE_use_JIT
+[1] TRUE
+
+$pdfviewer
+[1] "/usr/lib/rstudio-server/bin/postback/rpostback-pdfviewer"
+
+$pkgType
+[1] "source"
+
+$plumber.swagger.url
+function (url) 
+{
+    invisible(.Call("rs_plumberviewer", url, getwd(), "window", 
+        PACKAGE = "(embedding)"))
+}
+<environment: 0x55bea5ed20a8>
+attr(,"plumberViewerType")
+[1] "window"
+
+$printcmd
+[1] "/usr/bin/lpr"
+
+$profvis.keep_output
+[1] TRUE
+
+$profvis.print
+function (x) 
+{
+    envir <- as.environment(which(search() == "tools:rstudio"))
+    eval(substitute(.rs.profilePrint(x), list(x = x)), envir = envir)
+}
+<environment: 0x55bea455d150>
+
+$profvis.prof_extension
+[1] ".Rprof"
+
+$profvis.prof_output
+[1] "/home/rstudio/.rstudio/profiles-cache"
+
+$prompt
+[1] "> "
+
+$repos.CRAN
+[1] "https://packagemanager.rstudio.com/all/__linux__/focal/291"
+
+$restart
+function (afterRestartCommand = "") 
+{
+    afterRestartCommand <- paste(as.character(afterRestartCommand), 
+        collapse = "\n")
+    .Call("rs_restartR", afterRestartCommand, PACKAGE = "(embedding)")
+}
+<environment: 0x55bea5ed20a8>
+
+$reticulate.initialized
+function () 
+{
+    .Call("rs_reticulateInitialized", PACKAGE = "(embedding)")
+}
+<environment: 0x55bea6015158>
+
+$reticulate.repl.hook
+function (buffer, contents, trimmed) 
+{
+    if (buffer$empty()) {
+        if (grepl("^[?]", trimmed)) {
+            text <- substring(trimmed, 2)
+            .Call("rs_showPythonHelp", text, PACKAGE = "(embedding)")
+            return(TRUE)
+        }
+        reHelp <- "help\\((.*)\\)"
+        if (grepl(reHelp, trimmed)) {
+            text <- gsub(reHelp, "\\1", trimmed)
+            .Call("rs_showPythonHelp", text, PACKAGE = "(embedding)")
+            return(TRUE)
+        }
+    }
+    FALSE
+}
+<environment: 0x55bea5ed20a8>
+
+$reticulate.repl.initialize
+function () 
+{
+    builtins <- reticulate::import_builtins(convert = FALSE)
+    help <- builtins$help
+    .rs.setVar("reticulate.help", builtins$help)
+    builtins$help <- function(...) {
+        dots <- list(...)
+        if (length(dots) == 0) {
+            message("Error: Interactive Python help not available within RStudio")
+            return()
+        }
+        help(...)
+    }
+    if (requireNamespace("png", quietly = TRUE) && reticulate::py_module_available("matplotlib")) {
+        matplotlib <- reticulate::import("matplotlib", convert = TRUE)
+        backend <- matplotlib$get_backend()
+        if (!identical(tolower(backend), "agg")) {
+            sys <- reticulate::import("sys", convert = TRUE)
+            if ("matplotlib.backends" %in% names(sys$modules)) 
+                matplotlib$pyplot$switch_backend("agg")
+            else matplotlib$use("agg", warn = FALSE, force = TRUE)
+        }
+        plt <- matplotlib$pyplot
+        .rs.setVar("reticulate.matplotlib.show", plt$show)
+        plt$show <- .rs.reticulate.matplotlib.showHook
+    }
+}
+<environment: 0x55bea5ed20a8>
+
+$reticulate.repl.teardown
+function () 
+{
+    builtins <- reticulate::import_builtins(convert = FALSE)
+    builtins$help <- .rs.getVar("reticulate.help")
+    show <- .rs.getVar("reticulate.matplotlib.show")
+    if (!is.null(show)) {
+        matplotlib <- reticulate::import("matplotlib", convert = TRUE)
+        plt <- matplotlib$pyplot
+        plt$show <- show
+    }
+}
+<environment: 0x55bea5ed20a8>
+
+$rl_word_breaks
+[1] " \t\n\"\\'`><=%;,|&{()}"
+
+$rstudio.notebook.executing
+[1] FALSE
+
+$save.defaults.ascii
+[1] FALSE
+
+$save.defaults.compress
+[1] FALSE
+
+$save.image.defaults.ascii
+[1] FALSE
+
+$save.image.defaults.safe
+[1] TRUE
+
+$save.image.defaults.compress
+[1] FALSE
+
+$scipen
+[1] 0
+
+$shiny.launch.browser
+function (url) 
+{
+    invisible(.Call("rs_shinyviewer", url, getwd(), "window", 
+        NULL, PACKAGE = "(embedding)"))
+}
+<environment: 0x55bea5ed20a8>
+attr(,"shinyViewerType")
+[1] "window"
+
+$shinygadgets.showdialog
+function (caption, url, width = NULL, height = NULL) 
+{
+    if (!is.character(caption) || (length(caption) != 1)) 
+        stop("caption must be a single element character vector.", 
+            call. = FALSE)
+    if (!is.character(url) || (length(url) != 1)) 
+        stop("url must be a single element character vector.", 
+            call. = FALSE)
+    if (is.null(width)) 
+        width <- 600
+    if (is.null(height)) 
+        height <- 600
+    if (!is.numeric(width) || (length(width) != 1)) 
+        stop("width must be a single element numeric vector.", 
+            call. = FALSE)
+    if (!is.numeric(height) || (length(height) != 1)) 
+        stop("height must be a single element numeric vector.", 
+            call. = FALSE)
+    invisible(.Call("rs_showShinyGadgetDialog", caption, url, 
+        width, height))
+}
+<environment: 0x55bea4115728>
+
+$show.coef.Pvalues
+[1] TRUE
+
+$show.error.messages
+[1] TRUE
+
+$show.signif.stars
+[1] TRUE
+
+$str.strict.width
+[1] "no"
+
+$str.digits.d
+[1] 3
+
+$str.vec.len
+[1] 4
+
+$str.list.len
+[1] 99
+
+$str.drop.deparse.attr
+[1] TRUE
+
+$str.formatNum
+function (x, ...) 
+format(x, trim = TRUE, drop0trailing = TRUE, ...)
+<environment: 0x55bea5a569a0>
+
+$str.dendrogram.last
+[1] "`"
+
+$stringsAsFactors
+[1] FALSE
+
+$terminal.manager.terminalActivate
+function (id = NULL, show = TRUE) 
+{
+    if (!is.null(id) && (!is.character(id) || (length(id) != 
+        1))) 
+        stop("'id' must be NULL or a character vector of length one")
+    if (!is.logical(show)) 
+        stop("'show' must be TRUE or FALSE")
+    .Call("rs_terminalActivate", id, show)
+    invisible(NULL)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalCreate
+function (caption = NULL, show = TRUE, shellType = NULL) 
+{
+    if (!is.null(caption) && (!is.character(caption) || (length(caption) != 
+        1))) 
+        stop("'caption' must be NULL or a character vector of length one")
+    if (is.null(show) || !is.logical(show)) 
+        stop("'show' must be a logical vector")
+    if (!is.null(shellType) && (!is.character(shellType) || (length(shellType) != 
+        1))) 
+        stop("'shellType' must be NULL or a character vector of length one")
+    validShellType = TRUE
+    if (!is.null(shellType)) {
+        validShellType <- tolower(shellType) %in% c("default", 
+            "win-cmd", "win-ps", "win-git-bash", "win-wsl-bash", 
+            "ps-core", "custom")
+    }
+    if (!validShellType) 
+        stop("'shellType' must be NULL, or one of 'default', 'win-cmd', 'win-ps', 'win-git-bash', 'win-wsl-bash', 'ps-core', 'bash', 'zsh', or 'custom'.")
+    .Call("rs_terminalCreate", caption, show, shellType)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalClear
+function (id) 
+{
+    if (is.null(id) || !is.character(id) || length(id) != 1) 
+        stop("'id' must be a character vector of length one")
+    .Call("rs_terminalClear", id)
+    invisible(NULL)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalList
+function () 
+{
+    .Call("rs_terminalList")
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalContext
+function (id) 
+{
+    if (is.null(id) || !is.character(id) || (length(id) != 1)) 
+        stop("'id' must be a single element character vector")
+    .Call("rs_terminalContext", id)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalBuffer
+function (id, stripAnsi = TRUE) 
+{
+    if (is.null(id) || !is.character(id) || (length(id) != 1)) 
+        stop("'id' must be a single element character vector")
+    if (is.null(stripAnsi) || !is.logical(stripAnsi)) 
+        stop("'stripAnsi' must be a logical vector")
+    .Call("rs_terminalBuffer", id, stripAnsi)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalVisible
+function () 
+{
+    .Call("rs_terminalVisible")
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalBusy
+function (id) 
+{
+    if (is.null(id) || !is.character(id)) 
+        stop("'id' must be a character vector")
+    .Call("rs_terminalBusy", id)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalRunning
+function (id) 
+{
+    if (is.null(id) || !is.character(id)) 
+        stop("'id' must be a character vector")
+    .Call("rs_terminalRunning", id)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalKill
+function (id) 
+{
+    if (is.null(id) || !is.character(id)) 
+        stop("'id' must be a character vector")
+    .Call("rs_terminalKill", id)
+    invisible(NULL)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalSend
+function (id, text) 
+{
+    if (!is.character(text)) 
+        stop("'text' should be a character vector", call. = FALSE)
+    if (is.null(id) || !is.character(id) || length(id) != 1) 
+        stop("'id' must be a character vector of length one")
+    .Call("rs_terminalSend", id, text)
+    invisible(NULL)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalExecute
+function (command, workingDir = NULL, env = character(), show = TRUE) 
+{
+    if (is.null(command) || !is.character(command) || (length(command) != 
+        1)) 
+        stop("'command' must be a single element character vector")
+    if (!is.null(workingDir) && (!is.character(workingDir) || 
+        (length(workingDir) != 1))) 
+        stop("'workingDir' must be a single element character vector")
+    if (!is.null(env) && !is.character(env)) 
+        stop("'env' must be a character vector")
+    if (is.null(show) || !is.logical(show)) 
+        stop("'show' must be a logical vector")
+    .Call("rs_terminalExecute", command, workingDir, env, show)
+}
+<environment: 0x55bea5ed20a8>
+
+$terminal.manager.terminalExitCode
+function (id) 
+{
+    if (is.null(id) || !is.character(id) || (length(id) != 1)) 
+        stop("'id' must be a single element character vector")
+    .Call("rs_terminalExitCode", id)
+}
+<environment: 0x55bea5ed20a8>
+
+$texi2dvi
+[1] "/usr/bin/texi2dvi"
+
+$timeout
+[1] 60
+
+$ts.eps
+[1] 1e-05
+
+$ts.S.compat
+[1] FALSE
+
+$unzip
+[1] "internal"
+
+$useFancyQuotes
+[1] TRUE
+
+$verbose
+[1] FALSE
+
+$viewer
+function (url, height = NULL) 
+{
+    if (!is.character(url) || (length(url) != 1)) 
+        stop("url must be a single element character vector.", 
+            call. = FALSE)
+    if (identical(height, "maximize")) 
+        height <- -1
+    if (!is.null(height) && (!is.numeric(height) || (length(height) != 
+        1))) 
+        stop("height must be a single element numeric vector or 'maximize'.", 
+            call. = FALSE)
+    invisible(.Call("rs_viewer", url, height))
+}
+<environment: 0x55bea4115728>
+
+$warn
+[1] 0
+
+$warning.length
+[1] 1000
+
+$width
+[1] 105
+
+> c(list(A=c(B=1,C=2,d=3),b=c(E=10)),recursive =TRUE)
+A.B A.C A.d b.E 
+  1   2   3  10 
